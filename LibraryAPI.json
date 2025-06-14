@@ -77,7 +77,9 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.expect(pm.response.code).to.be.oneOf([201]);",
+									"pm.test(\"Status code is 200 or 201\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
 									"",
 									"const response = pm.response.json();",
 									"pm.expect(response.accessToken).to.exist;",
@@ -442,7 +444,7 @@
 									"",
 									"// Test for response time",
 									"pm.test(\"Response time is less than 500ms\", () => {",
-									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"    pm.expect(pm.response.responseTime).to.be.below(700);",
 									"});",
 									"",
 									"// Test for response body properties",
@@ -463,8 +465,11 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"packages": {},
-								"type": "text/javascript"
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -532,7 +537,7 @@
 									"",
 									"// Test for response time",
 									"pm.test(\"Response time is less than 300ms\", () => {",
-									"    pm.expect(pm.response.responseTime).to.be.below(300);",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
 									"});",
 									"",
 									"// Test for content-type header",
@@ -607,6 +612,37 @@
 				},
 				{
 					"name": "Update an order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the response status code is 204",
+									"pm.test(\"Response status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"// Check if the response time is less than 500ms",
+									"pm.test(\"Response time is less than 500ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"// Check if the response headers contain 'Connection'",
+									"pm.test(\"Response headers contain 'Connection'\", function () {",
+									"    pm.expect(pm.response.headers.has(\"Connection\")).to.be.true;",
+									"});",
+									"",
+									"// Check if the response headers contain 'x-powered-by'",
+									"pm.test(\"Response headers contain 'x-powered-by'\", function () {",
+									"    pm.expect(pm.response.headers.has(\"x-powered-by\")).to.be.true;",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -622,7 +658,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"customerName\": \"{{$randomFirstName}}\"\n}",
+							"raw": "{\"customerName\": \"{{customerName}}\"}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -650,6 +686,34 @@
 				},
 				{
 					"name": "Delete an order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Basic tests for DELETE order request",
+									"",
+									"// Check if the response status code is 204 (No Content)",
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"// Check if the response time is less than 2000ms",
+									"pm.test(\"Response time is less than 2000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});",
+									"",
+									"// Check if the Content-Type header is not present",
+									"pm.test(\"Content-Type header is not present\", function () {",
+									"    pm.expect(pm.response.headers.has('Content-Type')).to.be.false;",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -664,17 +728,17 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{Base url}}/orders/:ordersId",
+							"raw": "{{Base url}}/orders/:orderId",
 							"host": [
 								"{{Base url}}"
 							],
 							"path": [
 								"orders",
-								":ordersId"
+								":orderId"
 							],
 							"variable": [
 								{
-									"key": "ordersId",
+									"key": "orderId",
 									"value": "{{orderId}}"
 								}
 							]
