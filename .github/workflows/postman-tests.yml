@@ -26,7 +26,7 @@ jobs:
 
     - name: Run Postman Collection
       run: |
-        newman run LibraryAPI.json \
+        newman run LibraryAPI.postman_collection.json \
           --environment QA.postman_environment.json \
           --reporters cli,json,html \
           --reporter-html-export newman-report.html
