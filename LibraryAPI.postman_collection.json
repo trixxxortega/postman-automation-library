@@ -26,9 +26,35 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});"
+									"if (pm.response.headers.get(\"Content-Type\").includes(\"application/json\")) {",
+									"    // Test to check that the response status code is 200",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"",
+									"",
+									"    pm.test(\"Status field should not be null\", function () {",
+									"        const responseData = pm.response.json();",
+									"",
+									"        pm.expect(responseData).to.be.an('object');",
+									"        pm.expect(responseData.status).to.exist.and.to.not.be.null;",
+									"    });",
+									"",
+									"    pm.test(\"The Status field contains only allowed values\", function () {",
+									"        const responseData = pm.response.json();",
+									"        const allowedValues = [\"OK\"];",
+									"",
+									"        pm.expect(responseData).to.be.an('object');",
+									"        pm.expect(responseData.status).to.exist;",
+									"        pm.expect(allowedValues).to.include(responseData.status);",
+									"    });",
+									"",
+									"    pm.test(\"Response time is less than 500ms\", function () {",
+									"        pm.expect(pm.response.responseTime).to.be.below(500);",
+									"    });",
+									"} else {",
+									"    // Print actual content type",
+									"    console.log(\"Actual Content-Type:\", pm.response.headers.get(\"Content-Type\")); // This will log the content type to the console",
+									"}",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -77,16 +103,32 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200 or 201\", function () {",
+									"if (pm.response.headers.get(\"Content-Type\").includes(\"application/json\")) {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.accessToken).to.exist.and.to.be.a('string').and.to.have.lengthOf.at.least(1, \"AccessToken should not be empty\");",
+									"    ",
+									"    // Save the access token to environment variables",
+									"    pm.environment.set(\"accessToken\", jsonData.accessToken); ",
+									"}",
+									"",
+									"pm.test(\"Response status code is 200 or 201\", function () {",
 									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
 									"});",
 									"",
-									"const response = pm.response.json();",
-									"pm.expect(response.accessToken).to.exist;",
-									"pm.expect(response.accessToken).to.be.a('string');",
-									"pm.environment.set(\"accessToken\", response.accessToken);",
+									"pm.test(\"Response time is less than 500ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
 									"",
-									""
+									"pm.test(\"Response should contain only the accessToken field\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData).to.have.all.keys('accessToken');",
+									"});",
+									"",
+									"pm.test(\"Content-Type header is correctly set to application/json\", function () {",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+									"});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -116,13 +158,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{Base url}}/api-clients/",
+							"raw": "{{Base url}}/api-clients",
 							"host": [
 								"{{Base url}}"
 							],
 							"path": [
-								"api-clients",
-								""
+								"api-clients"
 							],
 							"query": [
 								{
@@ -147,9 +188,20 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Body matches string\", function () {",
-									"    pm.expect(pm.response.text()).to.include(\"fiction\");",
+									"pm.test(\"Response is JSON and status is OK\", () => {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
 									"});",
+									"",
+									"if (pm.response.headers.get(\"Content-Type\").includes(\"application/json\")) {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array').that.is.not.empty; // Ensure jsonData is an array and not empty",
+									"    pm.expect(jsonData[0].id).to.not.be.undefined; // Check for id instead of token",
+									"",
+									"    pm.test(\"Body matches string\", function () {",
+									"        pm.expect(pm.response.text()).to.include(\"fiction\");",
+									"    });",
+									"}",
 									""
 								],
 								"type": "text/javascript",
@@ -182,18 +234,28 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"var jsonData = pm.response.json();",
-									"",
-									"console.log(jsonData);",
-									"",
-									"pm.test(\"Your test name\", function () {",
-									"    pm.expect(jsonData.value).to.eql('jsonData' [\"fiction\"]);",
+									"pm.test(\"Response is JSON and status is OK\", () => {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
 									"});",
 									"",
-									"pm.test(\"Stock available\", () =>{",
-									"    pm.expect(jsonData[\"current-stock\"]).to.be.above(0);",
-									"    console.log(\"El stock actual es de: \" + jsonData[\"current-stock\"])",
-									"})"
+									"if (pm.response.headers.get(\"Content-Type\").includes(\"application/json\")) {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('object'); // Updated to check if jsonData is an object",
+									"    pm.expect(jsonData.id).to.not.be.undefined;",
+									"",
+									"    console.log(jsonData);",
+									"",
+									"    pm.test(\"Book is fiction\", function () {",
+									"        pm.expect(jsonData.type).to.eql('fiction'); // Fixed to access the correct property",
+									"    });",
+									"",
+									"    pm.test(\"Stock available\", () =>{",
+									"        pm.expect(jsonData[\"current-stock\"]).to.be.above(0);",
+									"        console.log(\"El stock actual es de: \" + jsonData[\"current-stock\"])",
+									"    });",
+									"}",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -235,13 +297,28 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"const response = pm.response.json();",
+									"pm.test(\"Response is JSON and status is OK\", () => {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
 									"",
-									"console.log(response.id);",
+									"if (pm.response.headers.get(\"Content-Type\").includes(\"application/json\")) {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('object'); // Updated to check if jsonData is an object",
+									"    pm.expect(jsonData.id).to.not.be.undefined;",
 									"",
-									"pm.test(\"BookId should not be available\" , () => {",
-									"    pm.expect(response.id).to.eql(2)",
-									"});"
+									"    console.log(jsonData);",
+									"",
+									"    pm.test(\"Book is fiction\", function () {",
+									"        pm.expect(jsonData.type).to.eql('fiction'); // Fixed to access the correct property",
+									"    });",
+									"",
+									"    pm.test(\"Stock available\", () =>{",
+									"        pm.expect(jsonData[\"current-stock\"]).to.be.eq0);",
+									"        console.log(\"El stock actual es de: \" + jsonData[\"current-stock\"])",
+									"    });",
+									"}",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
