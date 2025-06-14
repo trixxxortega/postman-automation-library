@@ -21,6 +21,9 @@ jobs:
     - name: Install Newman
       run: npm install -g newman
 
+    - name: Install HTML reporter for Newman
+      run: npm install -g newman-reporter-html
+
     - name: Run Postman Collection
       run: |
         newman run LibraryAPI.json \
