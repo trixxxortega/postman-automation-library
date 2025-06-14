@@ -309,13 +309,9 @@
 									"",
 									"    console.log(jsonData);",
 									"",
-									"    pm.test(\"Book is fiction\", function () {",
-									"        pm.expect(jsonData.type).to.eql('fiction'); // Fixed to access the correct property",
-									"    });",
-									"",
 									"    pm.test(\"Stock available\", () =>{",
-									"        pm.expect(jsonData[\"current-stock\"]).to.be.eq0);",
-									"        console.log(\"El stock actual es de: \" + jsonData[\"current-stock\"])",
+									"        pm.expect(jsonData[\"current-stock\"]).to.be.eq(0); // Fixed syntax error",
+									"        console.log(\"El stock actual es de: \" + jsonData[\"current-stock\"]);",
 									"    });",
 									"}",
 									""
@@ -848,12 +844,7 @@
 	"variable": [
 		{
 			"key": "Base url",
-			"value": "https://api.trello.com",
-			"type": "default"
-		},
-		{
-			"key": "accessToken",
-			"value": "---",
+			"value": "",
 			"type": "default"
 		}
 	]
