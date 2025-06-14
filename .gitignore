@@ -2,9 +2,6 @@
 .DS_Store
 Thumbs.db
 
-# Archivos de entorno de Postman (si son privados)
-*.postman_environment.json
-
 # Reportes generados por Newman
 newman/*.html
 newman/*.json
