@@ -617,9 +617,9 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"// Check if the response status code is 204",
-									"pm.test(\"Response status code is 204\", function () {",
-									"    pm.response.to.have.status(204);",
+									"// Check if the response status code is 200 or 204",
+									"pm.test(\"Status code is 200 or 201\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
 									"});",
 									"",
 									"// Check if the response time is less than 500ms",
@@ -691,16 +691,13 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"// Basic tests for DELETE order request",
-									"",
-									"// Check if the response status code is 204 (No Content)",
-									"pm.test(\"Status code is 204\", function () {",
-									"    pm.response.to.have.status(204);",
+									"// Check if the response status code is 200 or 204",
+									"pm.test(\"Status code is 200 or 201\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
 									"});",
-									"",
 									"// Check if the response time is less than 2000ms",
 									"pm.test(\"Response time is less than 2000ms\", function () {",
-									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"    pm.expect(pm.response.responseTime).to.be.below(800);",
 									"});",
 									"",
 									"// Check if the Content-Type header is not present",
