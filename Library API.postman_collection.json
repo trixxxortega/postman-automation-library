@@ -1,0 +1,722 @@
+{
+	"info": {
+		"_postman_id": "f73c4419-363e-4eaa-9650-270c40d7d96b",
+		"name": "Library API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7587907"
+	},
+	"item": [
+		{
+			"name": "Endpoint available",
+			"item": [
+				{
+					"name": "Endpoint Available",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Base url}}/status",
+							"host": [
+								"{{Base url}}"
+							],
+							"path": [
+								"status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "Register a user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.expect(pm.response.code).to.be.oneOf([201]);",
+									"",
+									"const response = pm.response.json();",
+									"pm.expect(response.accessToken).to.exist;",
+									"pm.expect(response.accessToken).to.be.a('string');",
+									"pm.environment.set(\"accessToken\", response.accessToken);",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"clientName\": \"{{$randomFirstName}}\",\n    \"clientEmail\":\"{{$randomEmail}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Base url}}/api-clients/",
+							"host": [
+								"{{Base url}}"
+							],
+							"path": [
+								"api-clients",
+								""
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Books",
+			"item": [
+				{
+					"name": "List of books",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"fiction\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base url}}/books",
+							"host": [
+								"{{Base url}}"
+							],
+							"path": [
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single book - available",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"console.log(jsonData);",
+									"",
+									"pm.test(\"Your test name\", function () {",
+									"    pm.expect(jsonData.value).to.eql('jsonData' [\"fiction\"]);",
+									"});",
+									"",
+									"pm.test(\"Stock available\", () =>{",
+									"    pm.expect(jsonData[\"current-stock\"]).to.be.above(0);",
+									"    console.log(\"El stock actual es de: \" + jsonData[\"current-stock\"])",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://simple-books-api.glitch.me/books/:bookId",
+							"protocol": "https",
+							"host": [
+								"simple-books-api",
+								"glitch",
+								"me"
+							],
+							"path": [
+								"books",
+								":bookId"
+							],
+							"variable": [
+								{
+									"key": "bookId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single book - NonAvailable",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"",
+									"console.log(response.id);",
+									"",
+									"pm.test(\"BookId should not be available\" , () => {",
+									"    pm.expect(response.id).to.eql(2)",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base url}}/books/:bookId",
+							"host": [
+								"{{Base url}}"
+							],
+							"path": [
+								"books",
+								":bookId"
+							],
+							"variable": [
+								{
+									"key": "bookId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a bookID- NonAvailable",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code !== 200) {",
+									"        throw new Error(\"Status code no es 200\");",
+									"        return;",
+									"        }",
+									"const contentType = pm.response.headers.get(\"Content-Type\");",
+									"",
+									"if(contentType.includes(!\"application/json\")){",
+									"    throw new Error(\"Content Type different from json, es: \"+ contentType );",
+									"    return;",
+									"}else{console.log(\"content/type= \" + contentType)}",
+									"",
+									"try{  ",
+									"",
+									"const response = pm.response.json();",
+									"const nonFictionBook = response.filter((book) => book.available === true);",
+									"const book = nonFictionBook[0];",
+									"",
+									"pm.test(\"Book Found\", () =>{",
+									"    pm.expect(book).to.be.an('object');",
+									"    pm.expect(book.available).to.eql(true);",
+									"    pm.globals.set(\"bookId\", book.id);",
+									"",
+									"});",
+									"",
+									"pm.test(\"Book Name is correct\", ()=>{",
+									"    pm.expect(nonFictionBook[1].name === \"The Russian\")",
+									"})",
+									"",
+									"const connectionHeader = pm.response.headers.get(\"Connection\");",
+									"",
+									"pm.test(\" Connection Request Header\", () => {",
+									"    pm.expect(connectionHeader).not.to.be.undefined;",
+									"",
+									"}) ",
+									"",
+									"const contentLenght = pm.response.headers.get(\"contentLenght\");",
+									"",
+									"pm.test(\"Content Lenght minor than 1000\", ()=> {",
+									"    pm.expect(contentLenght < 1000)",
+									"})",
+									"    }",
+									"catch(e){",
+									"",
+									"console.error(\"Error: endpoint non available: \", e.message);",
+									"}",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base url}}/books",
+							"host": [
+								"{{Base url}}"
+							],
+							"path": [
+								"books"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Get all orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the response JSON",
+									"const response = pm.response.json();",
+									"",
+									"// Test for status code",
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test for response time",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"// Test for response body being an array",
+									"pm.test(\"Response body is an array\", () => {",
+									"    pm.expect(response).to.be.an('array');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Base url}}/orders/",
+							"host": [
+								"{{Base url}}"
+							],
+							"path": [
+								"orders",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submit an order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"",
+									"// Save orderId in environment variables",
+									"pm.environment.set(\"orderId\", response.orderId);",
+									"",
+									"// Test for status code",
+									"pm.test(\"Status code is 201\", () => {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"// Test for response time",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"// Test for response body properties",
+									"pm.test(\"Response body has created property\", () => {",
+									"    pm.expect(response).to.have.property('created');",
+									"    pm.expect(response.created).to.be.a('boolean');",
+									"});",
+									"",
+									"pm.test(\"Response body has orderId property\", () => {",
+									"    pm.expect(response).to.have.property('orderId');",
+									"    pm.expect(response.orderId).to.be.a('string');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"packages": {},
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bookId\": 5,\n  \"customerName\": \"{{$randomFirstName}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Base url}}/orders",
+							"host": [
+								"{{Base url}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get an order",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"",
+									"pm.environment.set(\"customerName\", response.customerName); // Fixed to read from response",
+									"",
+									"// Test for status code",
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test for response time",
+									"pm.test(\"Response time is less than 300ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(300);",
+									"});",
+									"",
+									"// Test for content-type header",
+									"pm.test(\"Content-Type is application/json\", () => {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"// Test for response body properties",
+									"pm.test(\"Response body has required properties\", () => {",
+									"    pm.expect(response).to.have.all.keys(\"id\", \"bookId\", \"customerName\", \"createdBy\", \"quantity\", \"timestamp\");",
+									"});",
+									"",
+									"// Test for data types of properties",
+									"pm.test(\"Data types of properties are correct\", () => {",
+									"    pm.expect(response.id).to.be.a(\"string\");",
+									"    pm.expect(response.bookId).to.be.a(\"number\");",
+									"    pm.expect(response.customerName).to.be.a(\"string\");",
+									"    pm.expect(response.createdBy).to.be.a(\"string\");",
+									"    pm.expect(response.quantity).to.be.a(\"number\");",
+									"    pm.expect(response.timestamp).to.be.a(\"number\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Base url}}/orders/:orderId",
+							"host": [
+								"{{Base url}}"
+							],
+							"path": [
+								"orders",
+								":orderId"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "{{orderId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update an order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"customerName\": \"{{$randomFirstName}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Base url}}/orders/:ordersId",
+							"host": [
+								"{{Base url}}"
+							],
+							"path": [
+								"orders",
+								":ordersId"
+							],
+							"variable": [
+								{
+									"key": "ordersId",
+									"value": "{{orderId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete an order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{Base url}}/orders/:ordersId",
+							"host": [
+								"{{Base url}}"
+							],
+							"path": [
+								"orders",
+								":ordersId"
+							],
+							"variable": [
+								{
+									"key": "ordersId",
+									"value": "{{orderId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "Base url",
+			"value": "https://api.trello.com",
+			"type": "default"
+		},
+		{
+			"key": "accessToken",
+			"value": "---",
+			"type": "default"
+		}
+	]
+}

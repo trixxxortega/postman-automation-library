@@ -1,0 +1,17 @@
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de entorno de Postman (si son privados)
+*.postman_environment.json
+
+# Reportes generados por Newman
+newman/*.html
+newman/*.json
+newman/*.xml
+
+# Node modules (si usás scripts con Node.js)
+node_modules/
+
+# Archivos de logs
+*.log
