@@ -80,9 +80,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{Base url}}/status",
+							"raw": "{{BaseUrl}}/status",
 							"host": [
-								"{{Base url}}"
+								"{{BaseUrl}}"
 							],
 							"path": [
 								"status"
@@ -158,9 +158,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{Base url}}/api-clients",
+							"raw": "{{BaseUrl}}/api-clients",
 							"host": [
-								"{{Base url}}"
+								"{{BaseUrl}}"
 							],
 							"path": [
 								"api-clients"
@@ -216,9 +216,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{Base url}}/books",
+							"raw": "{{BaseUrl}}/books",
 							"host": [
-								"{{Base url}}"
+								"{{BaseUrl}}"
 							],
 							"path": [
 								"books"
@@ -269,12 +269,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://simple-books-api.glitch.me/books/:bookId",
-							"protocol": "https",
+							"raw": "{{BaseUrl}}/books/:bookId",
 							"host": [
-								"simple-books-api",
-								"glitch",
-								"me"
+								"{{BaseUrl}}"
 							],
 							"path": [
 								"books",
@@ -328,9 +325,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{Base url}}/books/:bookId",
+							"raw": "{{BaseUrl}}/books/:bookId",
 							"host": [
-								"{{Base url}}"
+								"{{BaseUrl}}"
 							],
 							"path": [
 								"books",
@@ -413,9 +410,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{Base url}}/books",
+							"raw": "{{BaseUrl}}/books",
 							"host": [
-								"{{Base url}}"
+								"{{BaseUrl}}"
 							],
 							"path": [
 								"books"
@@ -486,9 +483,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{Base url}}/orders/",
+							"raw": "{{BaseUrl}}/orders/",
 							"host": [
-								"{{Base url}}"
+								"{{BaseUrl}}"
 							],
 							"path": [
 								"orders",
@@ -569,9 +566,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{Base url}}/orders",
+							"raw": "{{BaseUrl}}/orders",
 							"host": [
-								"{{Base url}}"
+								"{{BaseUrl}}"
 							],
 							"path": [
 								"orders"
@@ -665,9 +662,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{Base url}}/orders/:orderId",
+							"raw": "{{BaseUrl}}/orders/:orderId",
 							"host": [
-								"{{Base url}}"
+								"{{BaseUrl}}"
 							],
 							"path": [
 								"orders",
@@ -739,9 +736,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{Base url}}/orders/:ordersId",
+							"raw": "{{BaseUrl}}/orders/:ordersId",
 							"host": [
-								"{{Base url}}"
+								"{{BaseUrl}}"
 							],
 							"path": [
 								"orders",
@@ -798,9 +795,9 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{Base url}}/orders/:orderId",
+							"raw": "{{BaseUrl}}/orders/:orderId",
 							"host": [
-								"{{Base url}}"
+								"{{BaseUrl}}"
 							],
 							"path": [
 								"orders",
@@ -839,13 +836,6 @@
 					""
 				]
 			}
-		}
-	],
-	"variable": [
-		{
-			"key": "Base url",
-			"value": "",
-			"type": "default"
 		}
 	]
 }
